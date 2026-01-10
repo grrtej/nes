@@ -1,12 +1,16 @@
 #pragma once
 
-#include <cstdint>
+#include "types.h"
+
 #include <vector>
 
 class System
 {
 public:
 	System(const char* filename);
-	std::vector<uint8_t> cpu_ram;
-	std::vector<uint8_t> ppu_ram;
+	void cycle();
+
+	std::vector<u8> cpu_ram;
+	std::vector<u8> ppu_ram;
+	u16 pc;
 };
