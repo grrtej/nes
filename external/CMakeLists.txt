@@ -37,6 +37,16 @@ target_sources(imgui
     imgui/backends/imgui_impl_opengl3.h
 )
 
+target_sources(imgui
+    PUBLIC
+    FILE_SET imgui_memory_editor
+    TYPE HEADERS
+    BASE_DIRS
+    imgui_memory_editor/
+    FILES
+    imgui_memory_editor/imgui_memory_editor.h
+)
+
 target_link_libraries(imgui
     PRIVATE
     glfw

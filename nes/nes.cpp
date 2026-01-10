@@ -1,6 +1,7 @@
 #include <imgui.h>
 #include <imgui_impl_glfw.h>
 #include <imgui_impl_opengl3.h>
+#include <imgui_memory_editor.h>
 #include <GLFW/glfw3.h>
 #include <stdio.h>
 
@@ -14,7 +15,7 @@ static void glfw_error_callback(int error, const char *description)
 int main(int, char **)
 {
     System sys{};
-    sys.loadRom("C:/Users/Gurtej/Source/nes/dk.nes");
+    sys.loadRom("C:/Users/Gurtej/Source/nes/dk.nes"); // file must exist, no err handling yet
 
     glfwSetErrorCallback(glfw_error_callback);
     if (!glfwInit())
@@ -59,6 +60,9 @@ int main(int, char **)
     bool show_demo_window = true;
     bool show_another_window = false;
     ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
+
+    MemoryEditor cpu_ram_editor;
+    MemoryEditor ppu_ram_editor;
 
     // Main loop
     while (!glfwWindowShouldClose(window))
@@ -116,6 +120,9 @@ int main(int, char **)
                 show_another_window = false;
             ImGui::End();
         }
+
+        cpu_ram_editor.DrawWindow("CPU RAM", sys.cpu_ram, 1024 * 64);
+        ppu_ram_editor.DrawWindow("PPU RAM", sys.ppu_ram, 1024 * 14);
 
         // Rendering
         ImGui::Render();
