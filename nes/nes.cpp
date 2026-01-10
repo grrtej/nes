@@ -14,8 +14,7 @@ static void glfw_error_callback(int error, const char *description)
 
 int main(int, char **)
 {
-    System sys{};
-    sys.loadRom("C:/Users/Gurtej/Source/nes/dk.nes"); // file must exist, no err handling yet
+    System sys("C:/Users/Gurtej/Source/nes/dk.nes"); // file must exist, no err handling yet
 
     glfwSetErrorCallback(glfw_error_callback);
     if (!glfwInit())
@@ -121,8 +120,8 @@ int main(int, char **)
             ImGui::End();
         }
 
-        cpu_ram_editor.DrawWindow("CPU RAM", sys.cpu_ram, 1024 * 64);
-        ppu_ram_editor.DrawWindow("PPU RAM", sys.ppu_ram, 1024 * 14);
+        cpu_ram_editor.DrawWindow("CPU RAM", sys.cpu_ram.data(), sys.cpu_ram.size());
+        ppu_ram_editor.DrawWindow("PPU RAM", sys.ppu_ram.data(), sys.ppu_ram.size());
 
         // Rendering
         ImGui::Render();
