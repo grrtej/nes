@@ -4,6 +4,8 @@
 #include <GLFW/glfw3.h>
 #include <stdio.h>
 
+#include "system.h"
+
 static void glfw_error_callback(int error, const char *description)
 {
     fprintf(stderr, "GLFW Error %d: %s\n", error, description);
@@ -11,6 +13,9 @@ static void glfw_error_callback(int error, const char *description)
 
 int main(int, char **)
 {
+    System sys{};
+    sys.loadRom("C:/Users/Gurtej/Source/nes/dk.nes");
+
     glfwSetErrorCallback(glfw_error_callback);
     if (!glfwInit())
         return 1;

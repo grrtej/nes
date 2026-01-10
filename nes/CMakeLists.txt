@@ -3,6 +3,7 @@ add_executable(nes)
 target_sources(nes
     PRIVATE
     nes.cpp
+    system.cpp
 )
 
 target_link_libraries(nes
