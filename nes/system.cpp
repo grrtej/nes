@@ -8,7 +8,7 @@
 #include <cstdio>
 #include <print>
 
-System::System(const char* filename) : cpu_ram(1024 * 64), ppu_ram(1024 * 14)
+System::System(const char* filename) : cpu_ram(1024 * 64), ppu_ram(1024 * 14), acc{ 0 }
 {
 	std::ifstream file(filename, std::ios::binary);
 	file.unsetf(std::ios::skipws);
@@ -45,15 +45,28 @@ void System::cycle()
 	// remove this soon, just a way to throttle loop
 	static int cycle_count = 0;
 
-	while (cycle_count < 1)
+	while (cycle_count < 4)
 	{
 		// fetch
 		u8 op = cpu_ram[pc];
 
 		switch (op)
 		{
+		case 0x78:
+			std::println(stderr, "SEI");
+			pc += 1;
+			break;
+		case 0xd8:
+			std::println(stderr, "CLD");
+			pc += 1;
+			break;
+		case 0xa9:
+			acc = cpu_ram[pc + 1];
+			std::println(stderr, "LDA ${:02X}", acc);
+			pc += 2;
+			break;
 		default:
-			std::print(stderr, "NOT IMPLEMENTED ${:02x}\n", op);
+			std::println(stderr, "NOT IMPLEMENTED ${:02X}", op);
 			break;
 		}
 

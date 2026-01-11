@@ -13,4 +13,5 @@ public:
 	std::vector<u8> cpu_ram;
 	std::vector<u8> ppu_ram;
 	u16 pc;
+	u8 acc;
 };
