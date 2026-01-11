@@ -3,6 +3,7 @@
 #include "types.h"
 
 #include <fstream>
+#include <iterator>
 #include <vector>
 
 System::System(const char* filename) : cpu_ram(1024 * 64), ppu_ram(1024 * 14)
