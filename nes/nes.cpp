@@ -124,6 +124,8 @@ int main(int, char**)
 		cpu_ram_editor.DrawWindow("CPU RAM", sys.cpu_ram.data(), sys.cpu_ram.size());
 		ppu_ram_editor.DrawWindow("PPU RAM", sys.ppu_ram.data(), sys.ppu_ram.size());
 
+		sys.cycle();
+
 		// Rendering
 		ImGui::Render();
 		int display_w, display_h;

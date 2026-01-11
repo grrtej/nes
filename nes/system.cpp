@@ -5,6 +5,8 @@
 #include <fstream>
 #include <iterator>
 #include <vector>
+#include <cstdio>
+#include <print>
 
 System::System(const char* filename) : cpu_ram(1024 * 64), ppu_ram(1024 * 14)
 {
@@ -40,5 +42,21 @@ System::System(const char* filename) : cpu_ram(1024 * 64), ppu_ram(1024 * 14)
 
 void System::cycle()
 {
+	// remove this soon, just a way to throttle loop
+	static int cycle_count = 0;
 
+	while (cycle_count < 1)
+	{
+		// fetch
+		u8 op = cpu_ram[pc];
+
+		switch (op)
+		{
+		default:
+			std::print(stderr, "NOT IMPLEMENTED ${:02x}\n", op);
+			break;
+		}
+
+		cycle_count++;
+	}
 }
