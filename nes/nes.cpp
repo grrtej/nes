@@ -62,7 +62,10 @@ int main(int, char**)
 	ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
 
 	MemoryEditor cpu_ram_editor;
+	cpu_ram_editor.ReadOnly = true;
+	cpu_ram_editor.GotoAddrAndHighlight(sys.pc, sys.pc);
 	MemoryEditor ppu_ram_editor;
+	ppu_ram_editor.ReadOnly = true;
 
 	// Main loop
 	while (!glfwWindowShouldClose(window))
