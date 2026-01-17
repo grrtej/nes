@@ -69,14 +69,26 @@ void System::cycle()
 
 		switch (op)
 		{
-		case 0x78:
+		case 0x78: // SEI
 			ps |= 0b00000100; // ERROR: THIS IS WRONG TIMING! SHOULD BE DELAYED 1 INSTRUCTION!
-			std::println(stderr, "%{:08b}", ps);
+			std::println(stderr, "[PS: %{:08b}]", ps);
 			break;
-		case 0xa9:
-			acc = cpu_ram[pc + 1];
-			std::println(stderr, "${:02X}", acc);
+		case 0xd8: // CLD
+			ps &= 0b11110111;
+			std::println(stderr, "[PS: %{:08b}]", ps);
 			break;
+		case 0xa9: // LDA #
+		{
+			u8 v = cpu_ram[pc + 1];
+			acc = v;
+
+			ps &= ~0b10000010; // clear N and Z
+			ps |= v & 0b10000000; // copy v7 to N
+			ps |= static_cast<u8>(v == 0) << 1; // copy v==0 to Z
+
+			std::println(stderr, "${:02X} [PS: %{:08b}]", acc, ps);
+			break;
+		}
 		default:
 			std::println(stderr, "<< NOT IMPLEMENTED >> ${:02X}", op);
 			break;
