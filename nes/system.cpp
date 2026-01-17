@@ -11,7 +11,7 @@
 #include <format>
 #include <stdexcept>
 
-System::System(const char* filename) : cpu_ram(1024 * 64), ppu_ram(1024 * 14), acc{ 0 }
+System::System(const char* filename) : cpu_ram(1024 * 64), ppu_ram(1024 * 14), acc{ 0 }, ps{ 0b00000100 }
 {
 	std::ifstream file(filename, std::ios::binary);
 	file.unsetf(std::ios::skipws);
@@ -69,6 +69,10 @@ void System::cycle()
 
 		switch (op)
 		{
+		case 0x78:
+			ps |= 0b00000100; // ERROR: THIS IS WRONG TIMING! SHOULD BE DELAYED 1 INSTRUCTION!
+			std::println(stderr, "%{:08b}", ps);
+			break;
 		case 0xa9:
 			acc = cpu_ram[pc + 1];
 			std::println(stderr, "${:02X}", acc);

@@ -7,6 +7,8 @@
 #include <GLFW/glfw3.h>
 
 #include <stdio.h>
+#include <format>
+#include <string>
 
 static void glfw_error_callback(int error, const char* description)
 {
@@ -67,6 +69,8 @@ int main(int, char**)
 	MemoryEditor ppu_ram_editor;
 	ppu_ram_editor.ReadOnly = true;
 
+	std::string cpu_state_buf;
+
 	// Main loop
 	while (!glfwWindowShouldClose(window))
 	{
@@ -126,6 +130,19 @@ int main(int, char**)
 
 		cpu_ram_editor.DrawWindow("CPU RAM", sys.cpu_ram.data(), sys.cpu_ram.size());
 		ppu_ram_editor.DrawWindow("PPU RAM", sys.ppu_ram.data(), sys.ppu_ram.size());
+
+		{
+			ImGui::Begin("CPU State");
+
+			// hopefully std::string deallocates whatever was in buf previously
+			cpu_state_buf = std::format("PS: %{:08b}\n", sys.ps);
+			cpu_state_buf += std::format("PC: ${:04X}\n", sys.pc);
+			cpu_state_buf += std::format("A: ${:02X}\n", sys.acc);
+
+			ImGui::TextUnformatted(cpu_state_buf.c_str());
+
+			ImGui::End();
+		}
 
 		sys.cycle();
 
