@@ -48,7 +48,7 @@ void System::cycle()
 	// remove this soon, just a way to throttle loop
 	static int cycle_count = 0;
 
-	if (cycle_count < 4)
+	if (cycle_count < 5)
 	{
 		// fetch
 		u8 op = cpu_ram[pc];
@@ -87,6 +87,13 @@ void System::cycle()
 			ps |= static_cast<u8>(v == 0) << 1; // copy v==0 to Z
 
 			std::println(stderr, "${:02X} [PS: %{:08b}]", acc, ps);
+			break;
+		}
+		case 0x8d: // STA abs
+		{
+			u16 addr = cpu_ram[pc + 2] << 8 | cpu_ram[pc + 1]; // le
+			cpu_ram[addr] = acc;
+			std::println(stderr, "${:04X} [CPU_RAM[{:04X}]: ${:02X}]", addr, addr, cpu_ram[addr]);
 			break;
 		}
 		default:
