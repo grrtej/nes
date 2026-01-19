@@ -11,9 +11,19 @@
 #include <format>
 #include <stdexcept>
 
+// utility functions
+namespace {
+	void set_n_and_z(u8& ps, u8 v) {
+		ps &= ~0b10000010; // clear N and Z
+		ps |= v & 0b10000000; // copy v7 to N
+		ps |= static_cast<u8>(v == 0) << 1; // copy v==0 to Z
+	}
+}
+
+// system init will need rework at some point
 System::System(const char* filename)
 	: cpu_ram(1024 * 64), ppu_ram(1024 * 14),
-	  acc{0}, ps{0b00000100}, ix{0}
+	acc{ 0 }, ps{ 0b00000100 }, ix{ 0 }, sp{ 0xFD }
 {
 	std::ifstream file(filename, std::ios::binary);
 	file.unsetf(std::ios::skipws);
@@ -50,7 +60,7 @@ void System::cycle()
 	// remove this soon, just a way to throttle loop
 	static int cycle_count = 0;
 
-	if (cycle_count < 6)
+	if (cycle_count < 9)
 	{
 		// fetch
 		u8 op = cpu_ram[pc];
@@ -84,9 +94,7 @@ void System::cycle()
 			u8 v = cpu_ram[pc + 1];
 			acc = v;
 
-			ps &= ~0b10000010; // clear N and Z
-			ps |= v & 0b10000000; // copy v7 to N
-			ps |= static_cast<u8>(v == 0) << 1; // copy v==0 to Z
+			set_n_and_z(ps, acc);
 
 			std::println(stderr, "${:02X} [PS: %{:08b}]", acc, ps);
 			break;
@@ -103,11 +111,34 @@ void System::cycle()
 			u8 v = cpu_ram[pc + 1];
 			ix = v;
 
-			ps &= ~0b10000010; // clear N and Z
-			ps |= v & 0b10000000; // copy v7 to N
-			ps |= static_cast<u8>(v == 0) << 1; // copy v==0 to Z
+			set_n_and_z(ps, ix);
 
 			std::println(stderr, "${:02X} [PS: %{:08b}]", ix, ps);
+			break;
+		}
+		case 0x9a: // TXS
+			sp = ix;
+			std::println(stderr, "[SP: ${:02X}]", sp);
+			break;
+		case 0xad: // LDA abs
+		{
+			u16 addr = cpu_ram[pc + 2] << 8 | cpu_ram[pc + 1];
+			u8 v = cpu_ram[addr];
+			acc = v;
+
+			set_n_and_z(ps, acc);
+
+			std::println(stderr, "{:04X} [${:02X}]", addr, acc);
+			break;
+		}
+		case 0x29: // AND #
+		{
+			u8 v = cpu_ram[pc + 1];
+			acc &= v;
+
+			set_n_and_z(ps, acc);
+
+			std::println(stderr, "${:02X}", v);
 			break;
 		}
 		default:

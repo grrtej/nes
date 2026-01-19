@@ -15,6 +15,6 @@ public:
 	u16 pc;
 	u8 acc;
 	u8 ps;
-
 	u8 ix;
+	u16 sp;
 };

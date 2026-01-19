@@ -137,6 +137,7 @@ int main(int, char**)
 			// hopefully std::string deallocates whatever was in buf previously
 			cpu_state_buf = std::format("PS: %{:08b}\n", sys.ps);
 			cpu_state_buf += std::format("PC: ${:04X}\n", sys.pc);
+			cpu_state_buf += std::format("SP: ${:02X}\n", sys.sp);
 			cpu_state_buf += std::format("A: ${:02X}\n", sys.acc);
 			cpu_state_buf += std::format("X: ${:02X}\n", sys.ix);
 
